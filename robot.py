@@ -20,8 +20,13 @@ class MyRobot(wpilib.IterativeRobot):
         self.throttle_toggle = False
         self.timer = wpilib.Timer()                                 #creates a timer to time the autonomous mode
 
+    def disabledInit(self):
+        self.logger.info("Disabled Mode")
 
-#The following lines define the arcade drive settings
+    def testInit(self):
+        self.logger.info("Test Mode")
+
+    #The following lines define the arcade drive settings
     def arcade_drive(self, forward, turn):
         left_value = -forward+turn
         left_value *= math.fabs(left_value)
@@ -35,6 +40,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.motor4.set(-right_value)
 
     def autonomousInit(self):                                       #resets and starts the timer at the beginning of autonomous
+        self.logger.info("Autonomous Mode")
         self.timer.reset()
         self.timer.start()
 
@@ -44,6 +50,9 @@ class MyRobot(wpilib.IterativeRobot):
             self.arcade_drive(0,0)                                  #this sets up code that makes the robot drive forward for two seconds, hence the timer
         else:
             self.arcade_drive(0.7,0)                                #sets the robot to drive forward at 0.7 of the normal speed
+
+    def teleopInit(self):
+        self.logger.info("Teleoperated Mode")
 
 #The following lines tell the robot what to do in teleop
     def teleopPeriodic(self):
