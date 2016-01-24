@@ -19,7 +19,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.rightFront = wpilib.VictorSP(MOTOR3_PWM)
         self.rightBack = wpilib.VictorSP(MOTOR4_PWM)
         self.stick = wpilib.Joystick(PORT3)
-        self.multiplier = 1  # creates a multiplayer to adjust the speed
+        self.multiplier = 1  # creates a multiplier to adjust the speed
         self.throttle_toggle = False
         self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
 
