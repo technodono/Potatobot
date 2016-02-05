@@ -15,4 +15,11 @@ To use the joystick you need pygame. If you have hombrew on OSX, you can install
 
     brew install pygame --with-python3
 
+# Robot Design
+
+* winch to pull back the elastic for firing the boulder
+* limit switch to detect the position of the winch
+* servo-controlled peg that holds the elastic and lets go to fire
+
+
 
