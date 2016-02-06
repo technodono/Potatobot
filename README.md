@@ -11,9 +11,19 @@ You need to install the pyfrc library:
 
     pip3 install pyfrc
 
+If you've already installed it you should make sure you're using the latest from time to time:
+
+    pip3 install pyfrc --upgrade
+
 To use the joystick you need pygame. If you have hombrew on OSX, you can install it _with python3 support_ using:
 
     brew install pygame --with-python3
+
+# Running in the simulator
+
+Do this:
+
+    python3 robot.py sim
 
 #Deployment
 
