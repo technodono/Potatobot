@@ -4,7 +4,7 @@ These is the repository for practice code for potatobot.
 
 test
 
-#Installation
+# Installation
 
 Check out <https://github.com/robotpy/pyfrc> for reference. There are a number of commands you need to run.
 You need to install the pyfrc library:
@@ -25,7 +25,7 @@ Do this:
 
     python3 robot.py sim
 
-#Deployment
+# Deployment
 
 To deploy the code to the robot, you need to be on the robot network and type following;
 
