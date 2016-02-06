@@ -99,6 +99,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.firing_pin.setAngle(180) #TODO no idea what angle this should be right now
 
     def reset_firing_pin(self):
+        self.logger.info("Resetting...")
         self.firing_pin.setAngle(0)
 
 # The following lines of code are ALWAYS needed to deploy code onto the robot
