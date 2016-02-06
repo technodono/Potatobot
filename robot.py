@@ -57,7 +57,6 @@ class MyRobot(wpilib.IterativeRobot):
 
     def autonomousInit(self):
         self.logger.info("Autonomous Mode")
-        self.logger.error("Log test")
         # resets and starts the timer at the beginning of autonomous
         self.timer.reset()
         self.timer.start()
