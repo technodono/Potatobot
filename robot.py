@@ -9,6 +9,7 @@ FIRING_SERVO = 4
 PORT1 = 1
 PORT2 = 5
 PORT3 = 0
+FIRING_SERVO_RESET_BUTTON = 12
 
 
 # noinspection PyAttributeOutsideInit
@@ -82,6 +83,9 @@ class MyRobot(wpilib.IterativeRobot):
             self.multiplier = (-self.stick.getThrottle() + 1) / 2
         if self.stick.getTrigger():
             self.fire()
+        # for now use a reset button on the stick, later, decide when we want the pin to be engaged
+        if self.stick.getButton(FIRING_SERVO_RESET_BUTTON):
+            self.reset_firing_pin()
 
     # These lines are needed to keep the motors turned off when the robot is disabled
     def disabledPeriodic(self):
@@ -93,6 +97,8 @@ class MyRobot(wpilib.IterativeRobot):
     def fire(self):
         self.firing_pin.setAngle(180) #TODO no idea what angle this should be right now
 
+    def reset_firing_pin(self):
+        self.firing_pin.setAngle(0)
 
 # The following lines of code are ALWAYS needed to deploy code onto the robot
 if __name__ == '__main__':
