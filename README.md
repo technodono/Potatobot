@@ -36,6 +36,11 @@ To deploy the code to the robot, you need to be on the robot network and type fo
 * winch to pull back the elastic for firing the boulder
 * limit switch to detect the position of the winch
 * servo-controlled peg that holds the elastic and lets go to fire
+* usb camera
+* some mechanism for aiming the ballista (up and down)
+* maybe an encoder or potentiometer for measuring the tilt of the ballista
+* some ball grabbing sub assembly with grabby things and something to tip the ball into the ballista (notably not
+chopsticks)
 
 
 
