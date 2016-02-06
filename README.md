@@ -15,4 +15,17 @@ To use the joystick you need pygame. If you have hombrew on OSX, you can install
 
     brew install pygame --with-python3
 
+#Deployment
+
+To deploy the code to the robot, you need to be on the robot network and type following;
+
+    python3 robot.py deploy
+
+# Robot Design
+
+* winch to pull back the elastic for firing the boulder
+* limit switch to detect the position of the winch
+* servo-controlled peg that holds the elastic and lets go to fire
+
+
 
