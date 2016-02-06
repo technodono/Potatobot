@@ -16,6 +16,7 @@ LIMIT_SWITCH_CHANNEL = 0
 HOLD_DEGREES = 0
 RELEASE_DEGREES = 180
 
+
 # noinspection PyAttributeOutsideInit
 class MyRobot(wpilib.IterativeRobot):
 
