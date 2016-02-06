@@ -10,7 +10,9 @@ PORT1 = 1
 PORT2 = 5
 PORT3 = 0
 FIRING_SERVO_RESET_BUTTON = 8
+CAMERA_NAME = "Microsoft LifeCam HD-3000" #Microsoft® LifeCam HD-3000
 LIMIT_SWITCH_CHANNEL = 0
+DEBUG_BUTTON = 7
 
 # firing pin positions
 HOLD_DEGREES = 0
@@ -29,6 +31,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.stick = wpilib.Joystick(PORT3)
         self.firing_pin = wpilib.Servo(FIRING_SERVO)
         self.limit_switch = wpilib.DigitalInput(LIMIT_SWITCH_CHANNEL)
+        self.camera = wpilib.USBCamera(CAMERA_NAME)
         self.multiplier = 1  # creates a multiplier to adjust the speed
         self.throttle_toggle = False
         self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
@@ -96,6 +99,8 @@ class MyRobot(wpilib.IterativeRobot):
         if not self.limit_switch.get():
             self.logger.info("Limit switch activated")
             # TODO stop the winch
+        if self.stick.getRawButton(DEBUG_BUTTON):
+            self.print_debug_stuff()
 
     # These lines are needed to keep the motors turned off when the robot is disabled
     def disabledPeriodic(self):
@@ -111,6 +116,12 @@ class MyRobot(wpilib.IterativeRobot):
     def reset_firing_pin(self):
         self.logger.info("Resetting...")
         self.firing_pin.setAngle(HOLD_DEGREES)
+
+    def print_debug_stuff(self):
+        self.logger.info("debug stuff!!")
+        self.logger.info("camera active: " + self.camera.active)
+        self.logger.info("camera name: " + self.camera.name)
+
 
 # The following lines of code are ALWAYS needed to deploy code onto the robot
 if __name__ == '__main__':
