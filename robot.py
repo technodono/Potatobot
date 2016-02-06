@@ -10,7 +10,7 @@ PORT1 = 1
 PORT2 = 5
 PORT3 = 0
 FIRING_SERVO_RESET_BUTTON = 8
-CAMERA_NAME = "Microsoft LifeCam HD-3000" #Microsoft® LifeCam HD-3000
+CAMERA_NAME = "Microsoft LifeCam HD-3000"  # Microsoft® LifeCam HD-3000
 LIMIT_SWITCH_CHANNEL = 0
 DEBUG_BUTTON = 7
 
@@ -101,6 +101,8 @@ class MyRobot(wpilib.IterativeRobot):
             # TODO stop the winch
         if self.stick.getRawButton(DEBUG_BUTTON):
             self.print_debug_stuff()
+        stickx = self.stick.getX()
+        self.logger.info("Stick X : " + stickx)
 
     # These lines are needed to keep the motors turned off when the robot is disabled
     def disabledPeriodic(self):
