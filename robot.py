@@ -1,7 +1,7 @@
 import wpilib
 import math
 
-MOTOR1_PWM = 0  # assigns the motors to pwm ports
+MOTOR1_PWM = 0
 MOTOR2_PWM = 1
 MOTOR3_PWM = 2
 MOTOR4_PWM = 3
@@ -10,7 +10,11 @@ PORT1 = 1
 PORT2 = 5
 PORT3 = 0
 FIRING_SERVO_RESET_BUTTON = 8
+LIMIT_SWITCH_CHANNEL = 0
 
+# firing pin positions
+HOLD_DEGREES = 0
+RELEASE_DEGREES = 180
 
 # noinspection PyAttributeOutsideInit
 class MyRobot(wpilib.IterativeRobot):
@@ -23,6 +27,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.rightBack = wpilib.VictorSP(MOTOR4_PWM)
         self.stick = wpilib.Joystick(PORT3)
         self.firing_pin = wpilib.Servo(FIRING_SERVO)
+        self.limit_switch = wpilib.DigitalInput(LIMIT_SWITCH_CHANNEL)
         self.multiplier = 1  # creates a multiplier to adjust the speed
         self.throttle_toggle = False
         self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
@@ -86,6 +91,9 @@ class MyRobot(wpilib.IterativeRobot):
         # for now use a reset button on the stick, later, decide when we want the pin to be engaged
         if self.stick.getRawButton(FIRING_SERVO_RESET_BUTTON):
             self.reset_firing_pin()
+        if not self.limit_switch.get():
+            self.logger.info("Limit switch activated")
+            # TODO stop the winch
 
     # These lines are needed to keep the motors turned off when the robot is disabled
     def disabledPeriodic(self):
@@ -96,11 +104,11 @@ class MyRobot(wpilib.IterativeRobot):
 
     def fire(self):
         self.logger.info("Firing...")
-        self.firing_pin.setAngle(180) #TODO no idea what angle this should be right now
+        self.firing_pin.setAngle(RELEASE_DEGREES)  # TODO no idea what angle this should be right now
 
     def reset_firing_pin(self):
         self.logger.info("Resetting...")
-        self.firing_pin.setAngle(0)
+        self.firing_pin.setAngle(HOLD_DEGREES)
 
 # The following lines of code are ALWAYS needed to deploy code onto the robot
 if __name__ == '__main__':
