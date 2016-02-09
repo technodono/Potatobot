@@ -34,6 +34,13 @@ class MyRobot(wpilib.IterativeRobot):
         self.camera_pan = wpilib.Servo(CAMERA_SERVO)
         self.limit_switch = wpilib.DigitalInput(LIMIT_SWITCH_CHANNEL)
         self.camera = wpilib.USBCamera()
+        # self.camera.setExposureManual(50)
+        # self.camera.setBrightness(80)
+        self.camera.updateSettings()
+
+        server = wpilib.CameraServer.getInstance()
+        server.startAutomaticCapture(self.camera)
+
         self.multiplier = 1  # creates a multiplier to adjust the speed
         self.throttle_toggle = False
         self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
