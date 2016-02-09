@@ -1,6 +1,7 @@
 import wpilib
 import math
 
+
 MOTOR1_PWM = 0
 MOTOR2_PWM = 1
 MOTOR3_PWM = 2
@@ -10,10 +11,20 @@ CAMERA_SERVO = 5  # PWM
 PORT1 = 1
 PORT2 = 5
 PORT3 = 0
+
+# Buttons
+THROTTLE_TOGGLE = 4
+NORMAL_THROTTLE = 2
+THIRTY_FIVE_PERCENT_THROTTLE = 3
+DOUBLE_THROTTLE = 5
 FIRING_SERVO_RESET_BUTTON = 8
+DEBUG_BUTTON = 7
+EXPOSURE_UP_BUTTON = 11
+EXPOSURE_DOWN_BUTTON = 12
+
+
 CAMERA_NAME = "Microsoft LifeCam HD-3000"  # Microsoft® LifeCam HD-3000
 LIMIT_SWITCH_CHANNEL = 0
-DEBUG_BUTTON = 7
 
 # firing pin positions
 HOLD_DEGREES = 0
@@ -34,7 +45,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.camera_pan = wpilib.Servo(CAMERA_SERVO)
         self.limit_switch = wpilib.DigitalInput(LIMIT_SWITCH_CHANNEL)
         self.camera = wpilib.USBCamera()
-        # self.camera.setExposureManual(50)
+        self.camera.setExposureManual(50)
         # self.camera.setBrightness(80)
         self.camera.updateSettings()
 
@@ -86,16 +97,16 @@ class MyRobot(wpilib.IterativeRobot):
     def teleopPeriodic(self):
         self.arcade_drive(-self.stick.getY(), -self.stick.getZ())  # Controls the Joystick, forwards, backwards,turn
         # assigns button 5 to multiply joystick position to 2, making it accelerate faster
-        if self.stick.getRawButton(5):
+        if self.stick.getRawButton(DOUBLE_THROTTLE):
             self.multiplier = 2
             self.throttle_toggle = False
-        if self.stick.getRawButton(2):  # assigns button 2 to multiply joystick position by 1 (normal speed)
+        if self.stick.getRawButton(NORMAL_THROTTLE):  # assigns button to multiply joystick position by 1 (normal speed)
             self.multiplier = 1
             self.throttle_toggle = False
-        if self.stick.getRawButton(3):  # assigns button 3 to 0.35 of 1, making the robot slower
+        if self.stick.getRawButton(THIRTY_FIVE_PERCENT_THROTTLE):  # assigns button to 0.35 speed
             self.multiplier = 0.35
             self.throttle_toggle = False
-        if self.stick.getRawButton(4):  # assigns button 4 to use the throttle to adjust speed.
+        if self.stick.getRawButton(THROTTLE_TOGGLE):  # assigns button to use the throttle to adjust speed.
             self.throttle_toggle = True
         if self.throttle_toggle:
             self.multiplier = (-self.stick.getThrottle() + 1) / 2
@@ -104,12 +115,17 @@ class MyRobot(wpilib.IterativeRobot):
         # for now use a reset button on the stick, later, decide when we want the pin to be engaged
         if self.stick.getRawButton(FIRING_SERVO_RESET_BUTTON):
             self.reset_firing_pin()
-        if not self.limit_switch.get():
+        if self.limit_switch.get():
             self.logger.info("Limit switch activated")
             # TODO stop the winch
         if self.stick.getRawButton(DEBUG_BUTTON):
             self.print_debug_stuff()
         self.camera_position(self.stick.getX())
+        exp = self.camera.exposureValue
+        if self.stick.getRawButton(EXPOSURE_UP_BUTTON) and exp < 100:
+            self.camera.setExposureManual(exp + 10)
+        if self.stick.getRawButton(EXPOSURE_DOWN_BUTTON) and exp > 0:
+            self.camera.setExposureManual(exp - 10)
 
     # These lines are needed to keep the motors turned off when the robot is disabled
     def disabledPeriodic(self):
@@ -128,8 +144,11 @@ class MyRobot(wpilib.IterativeRobot):
 
     def print_debug_stuff(self):
         self.logger.info("debug stuff!!")
-        self.logger.info("camera active: " + self.camera.active)
-        self.logger.info("camera name: " + self.camera.name)
+        self.logger.info("camera active: " + str(self.camera.active))
+        self.logger.info("camera name: " + str(self.camera.name))
+        self.logger.info("camera exposure: " + str(self.camera.exposureValue))
+        self.logger.info("camera fps: " + str(self.camera.fps))
+        self.logger.info("camera res: " + str(self.camera.width) + "x" + str(self.camera.height))
 
     def camera_position(self, stickx):
         self.camera_pan.setAngle((stickx + 1) * 90.0)
