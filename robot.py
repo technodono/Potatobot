@@ -5,7 +5,8 @@ MOTOR1_PWM = 0
 MOTOR2_PWM = 1
 MOTOR3_PWM = 2
 MOTOR4_PWM = 3
-FIRING_SERVO = 4
+FIRING_SERVO = 4  # PWM
+CAMERA_SERVO = 5  # PWM
 PORT1 = 1
 PORT2 = 5
 PORT3 = 0
@@ -30,8 +31,9 @@ class MyRobot(wpilib.IterativeRobot):
         self.rightBack = wpilib.VictorSP(MOTOR4_PWM)
         self.stick = wpilib.Joystick(PORT3)
         self.firing_pin = wpilib.Servo(FIRING_SERVO)
+        self.camera_pan = wpilib.Servo(CAMERA_SERVO)
         self.limit_switch = wpilib.DigitalInput(LIMIT_SWITCH_CHANNEL)
-        self.camera = wpilib.USBCamera(CAMERA_NAME)
+        self.camera = wpilib.USBCamera()
         self.multiplier = 1  # creates a multiplier to adjust the speed
         self.throttle_toggle = False
         self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
@@ -101,8 +103,7 @@ class MyRobot(wpilib.IterativeRobot):
             # TODO stop the winch
         if self.stick.getRawButton(DEBUG_BUTTON):
             self.print_debug_stuff()
-        stickx = self.stick.getX()
-        self.logger.info("Stick X : " + stickx)
+        self.camera_position(self.stick.getX())
 
     # These lines are needed to keep the motors turned off when the robot is disabled
     def disabledPeriodic(self):
@@ -123,6 +124,9 @@ class MyRobot(wpilib.IterativeRobot):
         self.logger.info("debug stuff!!")
         self.logger.info("camera active: " + self.camera.active)
         self.logger.info("camera name: " + self.camera.name)
+
+    def camera_position(self, stickx):
+        self.camera_pan.setAngle((stickx + 1) * 90.0)
 
 
 # The following lines of code are ALWAYS needed to deploy code onto the robot
