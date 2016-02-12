@@ -146,7 +146,7 @@ class MyRobot(wpilib.IterativeRobot):
 
     # The following lines tell the robot what to do in teleop
     def teleopPeriodic(self):
-        self.arcade_drive(-self.controls.forward(), -self.controls.turn())
+        self.arcade_drive(-self.controls.forward(), self.controls.turn())
         self.controls.update_throttle()
         if self.controls.fire_button():
             self.fire()
