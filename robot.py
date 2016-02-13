@@ -2,6 +2,7 @@
 
 import wpilib
 import math
+import logging
 
 #  port assignments
 MOTOR1_PWM = 0
@@ -13,15 +14,11 @@ CAMERA_SERVO = 5  # PWM
 JOYSTICK_PORT = 0
 FIRING_WINCH_LIMIT_SWITCH_CHANNEL = 0
 
-# Buttons
-THROTTLE_TOGGLE = 4
-NORMAL_THROTTLE = 2
-THIRTY_FIVE_PERCENT_THROTTLE = 3
-DOUBLE_THROTTLE = 5
-FIRING_SERVO_RESET_BUTTON = 8
-DEBUG_BUTTON = 7
-EXPOSURE_UP_BUTTON = 11
-EXPOSURE_DOWN_BUTTON = 12
+
+
+
+
+# Keyboard Buttons
 
 
 CAMERA_NAME = "Microsoft LifeCam HD-3000"
@@ -30,57 +27,108 @@ CAMERA_NAME = "Microsoft LifeCam HD-3000"
 HOLD_DEGREES = 0
 RELEASE_DEGREES = 180
 
-# TODO ps3 controls, keyboard controls and alternate joystick controls
+
+class Controls:
+
+    def get_throttle_multiplier(self):
+        print("override me")
+
+    def update_throttle(self):
+        print("override me")
+
+    def reset_firing_pin_button(self):
+        print("override me")
+
+    def fire_button(self):
+        print("override me")
+
+    def debug_button(self):
+        print("override me")
+
+    def get_camera_position(self):
+        print("override me")
+
+    def exposure_up_button(self):
+        print("override me")
+
+    def exposure_down_button(self):
+        print("override me")
+
+    def forward(self):
+        print("override me")
+
+    def turn(self):
+        print("override me")
 
 
-class OldControls:
+class OldControls(Controls):
 
-    def __init__(self, joystick):
+    # Joystick Buttons
+    THROTTLE_TOGGLE = 4
+    NORMAL_THROTTLE = 2
+    THIRTY_FIVE_PERCENT_THROTTLE = 3
+    DOUBLE_THROTTLE = 5
+    FIRING_SERVO_RESET_BUTTON = 8
+    DEBUG_BUTTON = 7
+    EXPOSURE_UP_BUTTON = 11
+    EXPOSURE_DOWN_BUTTON = 12
+
+    def __init__(self, joystick, logger):
         self.stick = joystick
         self.multiplier = 1
         self.throttle_toggle = False
+        self.logger = logger
 
     def get_throttle_multiplier(self):
         return self.multiplier
 
     def update_throttle(self):
-        if self.stick.getRawButton(DOUBLE_THROTTLE):
+        if self.stick.getRawButton(self.DOUBLE_THROTTLE):
             self.multiplier = 2
             self.throttle_toggle = False
-        if self.stick.getRawButton(NORMAL_THROTTLE):
+        if self.stick.getRawButton(self.NORMAL_THROTTLE):
             self.multiplier = 1
             self.throttle_toggle = False
-        if self.stick.getRawButton(THIRTY_FIVE_PERCENT_THROTTLE):
+        if self.stick.getRawButton(self.THIRTY_FIVE_PERCENT_THROTTLE):
             self.multiplier = 0.35
             self.throttle_toggle = False
-        if self.stick.getRawButton(THROTTLE_TOGGLE):
+        if self.stick.getRawButton(self.THROTTLE_TOGGLE):
             self.throttle_toggle = True
         if self.throttle_toggle:
             self.multiplier = (-self.stick.getThrottle() + 1) / 2
 
     def reset_firing_pin_button(self):
-        return self.stick.getRawButton(FIRING_SERVO_RESET_BUTTON)
+        return self.stick.getRawButton(self.FIRING_SERVO_RESET_BUTTON)
 
     def fire_button(self):
         return self.stick.getTrigger()
 
     def debug_button(self):
-        return self.stick.getRawButton(DEBUG_BUTTON)
+        return self.stick.getRawButton(self.DEBUG_BUTTON)
 
     def get_camera_position(self):
         return self.stick.getX()
 
     def exposure_up_button(self):
-        return self.stick.getRawButton(EXPOSURE_UP_BUTTON)
+        return self.stick.getRawButton(self.EXPOSURE_UP_BUTTON)
 
     def exposure_down_button(self):
-        return self.stick.getRawButton(EXPOSURE_DOWN_BUTTON)
+        return self.stick.getRawButton(self.EXPOSURE_DOWN_BUTTON)
 
     def forward(self):
         return self.stick.getY()
 
     def turn(self):
         return self.stick.getZ()
+
+
+# TODO ps3 controls, keyboard controls and alternate joystick controls
+class PS3Controls(OldControls):
+
+    def turn(self):
+        turn_amount = super(PS3Controls, self).turn()
+        self.logger.debug("turn amount: " + str(turn_amount))
+        return turn_amount
 
 
 # noinspection PyAttributeOutsideInit
@@ -102,9 +150,15 @@ class MyRobot(wpilib.IterativeRobot):
 
         server = wpilib.CameraServer.getInstance()
         server.startAutomaticCapture(self.camera)
+        # at the moment we are using the ps3 controller for the simulator, if we want to use the real
+        # joystick we will need to change this:
+        self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
 
-        self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT))
-        self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
+        # if self.isReal():
+        #     self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
+        # else:
+        #     self.controls = PS3Controls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
+        # self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
 
     def disabledInit(self):
         self.logger.info("Disabled Mode")
@@ -114,11 +168,15 @@ class MyRobot(wpilib.IterativeRobot):
 
     # The following lines define the arcade drive settings
     def arcade_drive(self, forward, turn):
-        left_value = -forward + turn
+        # use a parabolic throttle response profile
+        soft_turn = turn * turn
+        if turn < 0:
+            soft_turn = -soft_turn
+        left_value = -forward + soft_turn
         left_value *= math.fabs(left_value)
         multiplier = self.controls.get_throttle_multiplier()
         left_value *= multiplier
-        right_value = -forward - turn
+        right_value = -forward - soft_turn
         right_value *= math.fabs(right_value)
         right_value *= multiplier
         self.leftFront.set(left_value)
