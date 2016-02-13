@@ -240,12 +240,15 @@ class MyRobot(wpilib.IterativeRobot):
         self.firing_pin.setAngle(HOLD_DEGREES)
 
     def print_debug_stuff(self):
-        self.logger.info("debug stuff!!")
-        self.logger.info("camera active: " + str(self.camera.active))
-        self.logger.info("camera name: " + str(self.camera.name))
-        self.logger.info("camera exposure: " + str(self.camera.exposureValue))
-        self.logger.info("camera fps: " + str(self.camera.fps))
-        self.logger.info("camera res: " + str(self.camera.width) + "x" + str(self.camera.height))
+        try:
+            self.logger.info("debug stuff!!")
+            self.logger.info("camera active: " + str(self.camera.active))
+            self.logger.info("camera name: " + str(self.camera.name))
+            self.logger.info("camera exposure: " + str(self.camera.exposureValue))
+            self.logger.info("camera fps: " + str(self.camera.fps))
+            self.logger.info("camera res: " + str(self.camera.width) + "x" + str(self.camera.height))
+        except:
+            self.logger.error("error trying to print debug !!")
 
     def camera_position(self, direction):
         """
