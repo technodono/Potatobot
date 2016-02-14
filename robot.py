@@ -2,13 +2,13 @@
 
 import wpilib
 import math
-import logging
 
 #  port assignments
-MOTOR1_PWM = 0
-MOTOR2_PWM = 1
-MOTOR3_PWM = 2
-MOTOR4_PWM = 3
+
+BACK_RIGHT = 0
+FRONT_RIGHT = 1
+BACK_LEFT = 2
+FRONT_LEFT = 3
 FIRING_SERVO = 4  # PWM
 CAMERA_SERVO = 5  # PWM
 JOYSTICK_PORT = 0
@@ -86,7 +86,10 @@ class OldControls(Controls):
         if self.stick.getRawButton(self.THROTTLE_TOGGLE):
             self.throttle_toggle = True
         if self.throttle_toggle:
-            self.multiplier = (-self.stick.getThrottle() + 1) / 2
+            new_multiplier = (-self.stick.getThrottle() + 1) / 2
+            if not new_multiplier == self.multiplier:
+                self.logger.debug("Throttle: " + str(new_multiplier))
+            self.multiplier = new_multiplier
 
     def reset_firing_pin_button(self):
         return self.stick.getRawButton(self.FIRING_SERVO_RESET_BUTTON)
@@ -127,10 +130,10 @@ class MyRobot(wpilib.IterativeRobot):
 
     def robotInit(self):  # creates all the objects needed to operate the robot
         self.pdp = wpilib.PowerDistributionPanel()
-        self.leftFront = wpilib.VictorSP(MOTOR1_PWM)
-        self.leftBack = wpilib.VictorSP(MOTOR2_PWM)
-        self.rightFront = wpilib.VictorSP(MOTOR3_PWM)
-        self.rightBack = wpilib.VictorSP(MOTOR4_PWM)
+        self.leftFront = wpilib.VictorSP(FRONT_LEFT)
+        self.leftBack = wpilib.VictorSP(BACK_LEFT)
+        self.rightFront = wpilib.VictorSP(FRONT_RIGHT)
+        self.rightBack = wpilib.VictorSP(BACK_RIGHT)
         self.firing_pin = wpilib.Servo(FIRING_SERVO)
         self.camera_pan = wpilib.Servo(CAMERA_SERVO)
         self.limit_switch = wpilib.DigitalInput(FIRING_WINCH_LIMIT_SWITCH_CHANNEL)
@@ -196,16 +199,13 @@ class MyRobot(wpilib.IterativeRobot):
 
     # The following lines tell the robot what to do in teleop
     def teleopPeriodic(self):
-        self.arcade_drive(-self.controls.forward(), self.controls.turn())
+        self.arcade_drive(self.controls.forward(), self.controls.turn())
         self.controls.update_throttle()
         if self.controls.fire_button():
             self.fire()
         # for now use a reset button on the stick, later, decide when we want the pin to be engaged
         if self.controls.reset_firing_pin_button():
             self.reset_firing_pin()
-        if self.limit_switch.get():
-            self.logger.info("Limit switch activated")
-            # TODO stop the winch (and reset the firing pin probably)
         if self.controls.debug_button():
             self.print_debug_stuff()
         self.camera_position(self.controls.get_camera_position())
