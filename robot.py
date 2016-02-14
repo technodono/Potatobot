@@ -14,15 +14,6 @@ CAMERA_SERVO = 5  # PWM
 JOYSTICK_PORT = 0
 FIRING_WINCH_LIMIT_SWITCH_CHANNEL = 0
 
-
-
-
-
-# Keyboard Buttons
-
-
-CAMERA_NAME = "Microsoft LifeCam HD-3000"
-
 # firing pin positions TODO: no idea what angle these should be right now
 HOLD_DEGREES = 0
 RELEASE_DEGREES = 180
@@ -158,7 +149,8 @@ class MyRobot(wpilib.IterativeRobot):
         #     self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
         # else:
         #     self.controls = PS3Controls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
-        # self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
+
+        self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
 
     def disabledInit(self):
         self.logger.info("Disabled Mode")
