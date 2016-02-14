@@ -2,9 +2,11 @@
 
 import wpilib
 import math
-import logging
+import smart_dashboard_test
 
 #  port assignments
+from smart_dashboard_test import Smart_Dashboard_Test
+
 MOTOR1_PWM = 0
 MOTOR2_PWM = 1
 MOTOR3_PWM = 2
@@ -106,6 +108,9 @@ class OldControls(Controls):
     def exposure_down_button(self):
         return self.stick.getRawButton(self.EXPOSURE_DOWN_BUTTON)
 
+    def message_test(self):
+        return self.stick.getRawButton(self.MESSAGE_TEST)
+
     def forward(self):
         return self.stick.getY()
 
@@ -193,6 +198,11 @@ class MyRobot(wpilib.IterativeRobot):
     # The following lines tell the robot what to do in teleop
     def teleopInit(self):
         self.logger.info("Teleoperated Mode")
+        try:
+            sdt = Smart_Dashboard_Test()
+            sdt.smart_dashboard_test(self.timer)
+        except:
+            self.logger.debug("smart dashboard test failed (never mind)")
 
     # The following lines tell the robot what to do in teleop
     def teleopPeriodic(self):
