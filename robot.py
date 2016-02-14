@@ -2,8 +2,15 @@
 
 import wpilib
 import math
+import smart_dashboard_test
 
 #  port assignments
+from smart_dashboard_test import Smart_Dashboard_Test
+
+MOTOR1_PWM = 0
+MOTOR2_PWM = 1
+MOTOR3_PWM = 2
+MOTOR4_PWM = 3
 
 BACK_RIGHT = 0
 FRONT_RIGHT = 1
@@ -109,6 +116,9 @@ class OldControls(Controls):
     def exposure_down_button(self):
         return self.stick.getRawButton(self.EXPOSURE_DOWN_BUTTON)
 
+    def message_test(self):
+        return self.stick.getRawButton(self.MESSAGE_TEST)
+
     def forward(self):
         return self.stick.getY()
 
@@ -196,6 +206,11 @@ class MyRobot(wpilib.IterativeRobot):
     # The following lines tell the robot what to do in teleop
     def teleopInit(self):
         self.logger.info("Teleoperated Mode")
+        try:
+            sdt = Smart_Dashboard_Test()
+            sdt.smart_dashboard_test(self.timer)
+        except:
+            self.logger.debug("smart dashboard test failed (never mind)")
 
     # The following lines tell the robot what to do in teleop
     def teleopPeriodic(self):
@@ -206,6 +221,9 @@ class MyRobot(wpilib.IterativeRobot):
         # for now use a reset button on the stick, later, decide when we want the pin to be engaged
         if self.controls.reset_firing_pin_button():
             self.reset_firing_pin()
+        if self.limit_switch.get():
+            self.logger.info("Limit switch activated")
+            # TODO stop the winch (and reset the firing pin probably)
         if self.controls.debug_button():
             self.print_debug_stuff()
         self.camera_position(self.controls.get_camera_position())
