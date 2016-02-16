@@ -2,7 +2,7 @@
 
 import wpilib
 import math
-import smart_dashboard_test
+import logging
 
 #  port assignments
 from smart_dashboard_test import Smart_Dashboard_Test
@@ -71,32 +71,22 @@ class OldControls(Controls):
     EXPOSURE_UP_BUTTON = 11
     EXPOSURE_DOWN_BUTTON = 12
 
-    def __init__(self, joystick, logger):
+    logger = logging.getLogger('old_controls')
+
+    def __init__(self, joystick):
         self.stick = joystick
         self.multiplier = 1
         self.throttle_toggle = False
-        self.logger = logger
+        self.logger.debug("old controls constructor")
 
     def get_throttle_multiplier(self):
         return self.multiplier
 
     def update_throttle(self):
-        if self.stick.getRawButton(self.DOUBLE_THROTTLE):
-            self.multiplier = 2
-            self.throttle_toggle = False
-        if self.stick.getRawButton(self.NORMAL_THROTTLE):
-            self.multiplier = 1
-            self.throttle_toggle = False
-        if self.stick.getRawButton(self.THIRTY_FIVE_PERCENT_THROTTLE):
-            self.multiplier = 0.35
-            self.throttle_toggle = False
-        if self.stick.getRawButton(self.THROTTLE_TOGGLE):
-            self.throttle_toggle = True
-        if self.throttle_toggle:
-            new_multiplier = (-self.stick.getThrottle() + 1) / 2
-            if not new_multiplier == self.multiplier:
-                self.logger.debug("Throttle: " + str(new_multiplier))
-            self.multiplier = new_multiplier
+        new_multiplier = (-self.stick.getThrottle() + 1) / 2
+        if math.fabs(new_multiplier - self.multiplier) > 0.1:
+            self.logger.info("Throttle: " + str(new_multiplier))
+        self.multiplier = new_multiplier
 
     def reset_firing_pin_button(self):
         return self.stick.getRawButton(self.FIRING_SERVO_RESET_BUTTON)
@@ -156,7 +146,7 @@ class MyRobot(wpilib.IterativeRobot):
         server.startAutomaticCapture(self.camera)
         # at the moment we are using the ps3 controller for the simulator, if we want to use the real
         # joystick we will need to change this:
-        self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
+        self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT))
 
         # if self.isReal():
         #     self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
@@ -272,4 +262,3 @@ class MyRobot(wpilib.IterativeRobot):
 # The following lines of code are ALWAYS needed to deploy code onto the robot
 if __name__ == '__main__':
     wpilib.run(MyRobot)
-
