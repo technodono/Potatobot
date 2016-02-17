@@ -2,16 +2,12 @@
 import logging
 import math
 
+import wpilib
+
 
 class Controls:
 
     def get_throttle_multiplier(self):
-        print("override me")
-
-    def reset_firing_pin_button(self):
-        print("override me")
-
-    def fire_button(self):
         print("override me")
 
     def message_test(self):
@@ -41,8 +37,8 @@ class OldControls(Controls):
     # Joystick Buttons
     MESSAGE_TEST = 4
     DEBUG_BUTTON = 7
-    EXPOSURE_UP_BUTTON = 11
-    EXPOSURE_DOWN_BUTTON = 12
+    EXPOSURE_UP_BUTTON = 5
+    EXPOSURE_DOWN_BUTTON = 6
 
     logger = logging.getLogger('old_controls')
 
@@ -56,14 +52,9 @@ class OldControls(Controls):
         new_multiplier = (-self.stick.getThrottle() + 1) / 2
         if math.fabs(new_multiplier - self.multiplier) > 0.1:
             self.logger.info("Throttle: " + str(new_multiplier))
+            wpilib.SmartDashboard.putString('throttle', str(new_multiplier))
         self.multiplier = new_multiplier
         return self.multiplier
-
-    def reset_firing_pin_button(self):
-        return self.stick.getRawButton(self.FIRING_SERVO_RESET_BUTTON)
-
-    def fire_button(self):
-        return self.stick.getTrigger()
 
     def debug_button(self):
         return self.stick.getRawButton(self.DEBUG_BUTTON)

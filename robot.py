@@ -5,18 +5,12 @@ import math
 
 from rigs.controls import OldControls
 
-#  port assignments
-from smart_dashboard_test import Smart_Dashboard_Test
-
-MOTOR1_PWM = 0
-MOTOR2_PWM = 1
-MOTOR3_PWM = 2
-MOTOR4_PWM = 3
-
+#  motor port assignments
 BACK_RIGHT = 0
 FRONT_RIGHT = 1
 BACK_LEFT = 2
 FRONT_LEFT = 3
+
 CAMERA_SERVO = 5  # PWM
 JOYSTICK_PORT = 0
 
@@ -90,11 +84,6 @@ class MyRobot(wpilib.IterativeRobot):
     # The following lines tell the robot what to do in teleop
     def teleopInit(self):
         self.logger.info("Teleoperated Mode")
-        try:
-            sdt = Smart_Dashboard_Test()
-            sdt.smart_dashboard_test(self.timer)
-        except:
-            self.logger.debug("smart dashboard test failed (never mind)")
 
     # The following lines tell the robot what to do in teleop
     def teleopPeriodic(self):
