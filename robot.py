@@ -20,10 +20,6 @@ FRONT_LEFT = 3
 CAMERA_SERVO = 5  # PWM
 JOYSTICK_PORT = 0
 
-# firing pin positions TODO: no idea what angle these should be right now
-HOLD_DEGREES = 0
-RELEASE_DEGREES = 180
-
 
 # noinspection PyAttributeOutsideInit
 class MyRobot(wpilib.IterativeRobot):
@@ -104,8 +100,6 @@ class MyRobot(wpilib.IterativeRobot):
     def teleopPeriodic(self):
         self.arcade_drive(self.controls.forward(), self.controls.turn())
 
-        if self.controls.fire_button():
-            self.fire()
         if self.controls.debug_button():
             self.print_debug_stuff()
         self.camera_position(self.controls.get_camera_position())
@@ -122,14 +116,6 @@ class MyRobot(wpilib.IterativeRobot):
         self.leftBack.set(0)
         self.rightFront.set(0)
         self.rightBack.set(0)
-
-    def fire(self):
-        self.logger.info("Firing...")
-        self.firing_pin.setAngle(RELEASE_DEGREES)
-
-    def reset_firing_pin(self):
-        self.logger.info("Resetting...")
-        self.firing_pin.setAngle(HOLD_DEGREES)
 
     def print_debug_stuff(self):
         try:
