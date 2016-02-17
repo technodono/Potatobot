@@ -2,7 +2,8 @@
 
 import wpilib
 import math
-import logging
+
+from rigs.controls import OldControls
 
 #  port assignments
 from smart_dashboard_test import Smart_Dashboard_Test
@@ -16,113 +17,12 @@ BACK_RIGHT = 0
 FRONT_RIGHT = 1
 BACK_LEFT = 2
 FRONT_LEFT = 3
-FIRING_SERVO = 4  # PWM
 CAMERA_SERVO = 5  # PWM
 JOYSTICK_PORT = 0
-FIRING_WINCH_LIMIT_SWITCH_CHANNEL = 0
 
 # firing pin positions TODO: no idea what angle these should be right now
 HOLD_DEGREES = 0
 RELEASE_DEGREES = 180
-
-
-class Controls:
-
-    def get_throttle_multiplier(self):
-        print("override me")
-
-    def update_throttle(self):
-        print("override me")
-
-    def reset_firing_pin_button(self):
-        print("override me")
-
-    def fire_button(self):
-        print("override me")
-
-    def debug_button(self):
-        print("override me")
-
-    def get_camera_position(self):
-        print("override me")
-
-    def exposure_up_button(self):
-        print("override me")
-
-    def exposure_down_button(self):
-        print("override me")
-
-    def forward(self):
-        print("override me")
-
-    def turn(self):
-        print("override me")
-
-
-class OldControls(Controls):
-
-    # Joystick Buttons
-    THROTTLE_TOGGLE = 4
-    NORMAL_THROTTLE = 2
-    THIRTY_FIVE_PERCENT_THROTTLE = 3
-    DOUBLE_THROTTLE = 5
-    FIRING_SERVO_RESET_BUTTON = 8
-    DEBUG_BUTTON = 7
-    EXPOSURE_UP_BUTTON = 11
-    EXPOSURE_DOWN_BUTTON = 12
-
-    logger = logging.getLogger('old_controls')
-
-    def __init__(self, joystick):
-        self.stick = joystick
-        self.multiplier = 1
-        self.throttle_toggle = False
-        self.logger.debug("old controls constructor")
-
-    def get_throttle_multiplier(self):
-        return self.multiplier
-
-    def update_throttle(self):
-        new_multiplier = (-self.stick.getThrottle() + 1) / 2
-        if math.fabs(new_multiplier - self.multiplier) > 0.1:
-            self.logger.info("Throttle: " + str(new_multiplier))
-        self.multiplier = new_multiplier
-
-    def reset_firing_pin_button(self):
-        return self.stick.getRawButton(self.FIRING_SERVO_RESET_BUTTON)
-
-    def fire_button(self):
-        return self.stick.getTrigger()
-
-    def debug_button(self):
-        return self.stick.getRawButton(self.DEBUG_BUTTON)
-
-    def get_camera_position(self):
-        return self.stick.getX()
-
-    def exposure_up_button(self):
-        return self.stick.getRawButton(self.EXPOSURE_UP_BUTTON)
-
-    def exposure_down_button(self):
-        return self.stick.getRawButton(self.EXPOSURE_DOWN_BUTTON)
-
-    def message_test(self):
-        return self.stick.getRawButton(self.MESSAGE_TEST)
-
-    def forward(self):
-        return self.stick.getY()
-
-    def turn(self):
-        return self.stick.getZ()
-
-
-# TODO ps3 controls, keyboard controls and alternate joystick controls
-class PS3Controls(OldControls):
-
-    def turn(self):
-        turn_amount = super(PS3Controls, self).turn()
-        self.logger.debug("turn amount: " + str(turn_amount))
-        return turn_amount
 
 
 # noinspection PyAttributeOutsideInit
@@ -134,9 +34,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.leftBack = wpilib.VictorSP(BACK_LEFT)
         self.rightFront = wpilib.VictorSP(FRONT_RIGHT)
         self.rightBack = wpilib.VictorSP(BACK_RIGHT)
-        self.firing_pin = wpilib.Servo(FIRING_SERVO)
         self.camera_pan = wpilib.Servo(CAMERA_SERVO)
-        self.limit_switch = wpilib.DigitalInput(FIRING_WINCH_LIMIT_SWITCH_CHANNEL)
         self.camera = wpilib.USBCamera()
         self.camera.setExposureManual(50)
         # self.camera.setBrightness(80)
@@ -205,15 +103,9 @@ class MyRobot(wpilib.IterativeRobot):
     # The following lines tell the robot what to do in teleop
     def teleopPeriodic(self):
         self.arcade_drive(self.controls.forward(), self.controls.turn())
-        self.controls.update_throttle()
+
         if self.controls.fire_button():
             self.fire()
-        # for now use a reset button on the stick, later, decide when we want the pin to be engaged
-        if self.controls.reset_firing_pin_button():
-            self.reset_firing_pin()
-        if self.limit_switch.get():
-            self.logger.info("Limit switch activated")
-            # TODO stop the winch (and reset the firing pin probably)
         if self.controls.debug_button():
             self.print_debug_stuff()
         self.camera_position(self.controls.get_camera_position())
