@@ -24,6 +24,9 @@ Do this:
 
     python3 robot.py sim
 
+The ```config.json``` file specifies the field used in the simulator. Note that the colours used come from the
+tkinter library and are enumerated here: <http://wiki.tcl.tk/37701>
+
 # Deployment
 
 To deploy the code to the robot, you need to be on the robot network and type following;
