@@ -15,6 +15,7 @@ defaultEdge = ballSize / 3
 
 boulderSeparation = inches_in_feet(45.5)
 barrierSeparation = inches_in_feet(50)
+defenseSeparation = inches_in_feet(52.5)
 
 
 # make a boulder centered at x,y
@@ -80,10 +81,6 @@ def print_barrier(x, y, thick):
     print('"points": [' + pair([x, y]), pair([x + length, y]), pair([x + length, y + thick]), pair([x, y + thick]) + ']', sep=', ')
     print('}')
 
-defenseSeparation = inches_in_feet(52.5)
-print_barrier(15.95, 4.458, 0.1)
-print_barrier(15.95, 4.458 + defenseSeparation, 0.1)
-print_barrier(15.95, 4.458 + defenseSeparation * 2, 0.1)
-print_barrier(15.95, 4.458 + defenseSeparation * 3, 0.1)
-print_barrier(15.95, 4.458 + defenseSeparation * 4, 0.1)
-print_barrier(15.95, 4.458 + defenseSeparation * 5, 0.1)
+for i in range(6):
+    print_barrier(15.95, 4.458 + i * defenseSeparation, 0.1)
+
