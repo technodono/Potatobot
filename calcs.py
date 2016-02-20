@@ -19,39 +19,39 @@ defenseSeparation = inches_in_feet(52.5)
 
 
 # make a boulder centered at x,y
-def make_boulder(x, y, boulderEdge=defaultEdge):
+def make_boulder(x, y, edge=defaultEdge):
     b = []
     # leftmost top point
-    x1 = x - boulderEdge / 6
-    y1 = y - boulderEdge / 2
+    x1 = x - edge / 6
+    y1 = y - edge / 2
     b.append([x1, y1])
     # rightmost top point
-    x2 = x1 + boulderEdge
+    x2 = x1 + edge
     y2 = y1
     b.append([x2, y2])
     # topmost right point
-    x3 = x2 + boulderEdge
-    y3 = y2 + boulderEdge
+    x3 = x2 + edge
+    y3 = y2 + edge
     b.append([x3, y3])
     # bottommost right point
     x4 = x3
-    y4 = y3 + boulderEdge
+    y4 = y3 + edge
     b.append([x4, y4])
     # rightmost bottom point
-    x5 = x4 - boulderEdge
-    y5 = y4 + boulderEdge
+    x5 = x4 - edge
+    y5 = y4 + edge
     b.append([x5, y5])
     # leftmost bottom point
-    x6 = x5 - boulderEdge
+    x6 = x5 - edge
     y6 = y5
     b.append([x6, y6])
     # bottommost left point
-    x7 = x6 - boulderEdge
-    y7 = y6 - boulderEdge
+    x7 = x6 - edge
+    y7 = y6 - edge
     b.append([x7, y7])
     # topmost left point
     x8 = x7
-    y8 = y7 - boulderEdge
+    y8 = y7 - edge
     b.append([x8, y8])
     return b
 
