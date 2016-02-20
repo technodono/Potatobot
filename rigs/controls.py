@@ -45,7 +45,6 @@ class OldControls(Controls):
     def __init__(self, joystick):
         self.stick = joystick
         self.multiplier = 1
-        self.throttle_toggle = False
         self.logger.debug("old controls constructor")
 
     def get_throttle_multiplier(self):
