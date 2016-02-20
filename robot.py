@@ -12,7 +12,6 @@ BACK_LEFT = 2
 FRONT_LEFT = 3
 GAME_ARM = 4
 
-
 CAMERA_SERVO = 5  # PWM
 JOYSTICK_PORT = 0
 
@@ -30,28 +29,6 @@ class MyRobot(wpilib.IterativeRobot):
         self.game_arm = wpilib.VictorSP(GAME_ARM)
         self.camera = wpilib.USBCamera()
         self.camera.setExposureManual(50)
-        # self.camera.setBrightness(80)
-        self.camera.updateSettings()
-
-        server = wpilib.CameraServer.getInstance()
-        server.startAutomaticCapture(self.camera)
-        # at the moment we are using the ps3 controller for the simulator, if we want to use the real
-        # joystick we will need to change this:
-        self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT))
-
-        # if self.isReal():
-        #     self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
-        # else:
-        #     self.controls = PS3Controls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
-
-        self.leftFront = wpilib.VictorSP(FRONT_LEFT)
-        self.leftBack = wpilib.VictorSP(BACK_LEFT)
-        self.rightFront = wpilib.VictorSP(FRONT_RIGHT)
-        self.rightBack = wpilib.VictorSP(BACK_RIGHT)
-        self.camera_pan = wpilib.Servo(CAMERA_SERVO)
-        self.camera = wpilib.USBCamera()
-        self.camera.setExposureManual(50)
-        # self.camera.setBrightness(80)
         self.camera.updateSettings()
 
         server = wpilib.CameraServer.getInstance()
@@ -88,7 +65,6 @@ class MyRobot(wpilib.IterativeRobot):
 
     def autonomousInit(self):
         self.logger.info("Autonomous Mode")
-        self.logger.error("Log test")
         # resets and starts the timer at the beginning of autonomous
         self.timer.reset()
         self.timer.start()
@@ -127,14 +103,6 @@ class MyRobot(wpilib.IterativeRobot):
         self.rightFront.set(0)
         self.rightBack.set(0)
 
-    def fire(self):
-        self.logger.info("Firing...")
-        self.firing_pin.setAngle(RELEASE_DEGREES)  # TODO no idea what angle this should be right now
-
-    def reset_firing_pin(self):
-        self.logger.info("Resetting...")
-        self.firing_pin.setAngle(HOLD_DEGREES)
-
     def print_debug_stuff(self):
         try:
             self.logger.info("debug stuff!!")
@@ -158,5 +126,3 @@ class MyRobot(wpilib.IterativeRobot):
 # The following lines of code are ALWAYS needed to deploy code onto the robot
 if __name__ == '__main__':
     wpilib.run(MyRobot)
-
-# By Alex Rowell, Beniamino Briganti, Lucca Buonamano, Blake Mountford and Lex Martin
