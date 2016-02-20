@@ -1,7 +1,8 @@
 # By Alex Rowell, Beniamino Briganti, Lucca Buonamano, Blake Mountford and Lex Martin
 
-import wpilib
 import math
+
+import wpilib
 
 from rigs.controls import OldControls
 

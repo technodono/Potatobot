@@ -1,3 +1,4 @@
+# By Alex Rowell, Beniamino Briganti, Lucca Buonamano, Blake Mountford and Lex Martin
 
 import logging
 import math
