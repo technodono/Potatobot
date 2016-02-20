@@ -36,11 +36,6 @@ class MyRobot(wpilib.IterativeRobot):
         # joystick we will need to change this:
         self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT))
 
-        # if self.isReal():
-        #     self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
-        # else:
-        #     self.controls = PS3Controls(wpilib.Joystick(JOYSTICK_PORT), self.logger)
-
         self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
 
     def disabledInit(self):
