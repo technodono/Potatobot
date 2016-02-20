@@ -69,20 +69,22 @@ class MyRobot(wpilib.IterativeRobot):
         self.timer.reset()
         self.timer.start()
 
-    # The following lines tell the robot what to do in autonomous
+    # What to do in autonomous
     def autonomousPeriodic(self):
+        pass
+        # commented this out for now, it's dangerous to leave it here without any modelling or testing
         # this sets up code that makes the robot drive forward for two seconds, hence the timer
-        if self.timer.get() < 2:
-            self.arcade_drive(0.7, 0)  # sets the robot to drive forward at 0.7 of the normal speed
-        else:
-            self.arcade_drive(0, 0)
+        #if self.timer.get() < 2:
+        #    self.arcade_drive(0.7, 0)  # sets the robot to drive forward at 0.7 of the normal speed
+        #else:
+        #    self.arcade_drive(0, 0)
 
-    # The following lines tell the robot what to do in teleop
+    # What to do at the beginning of teleop
     def teleopInit(self):
         self.logger.info("Teleoperated Mode")
 
 
-    # The following lines tell the robot what to do in teleop
+    # What to do continuously in teleop
     def teleopPeriodic(self):
         self.arcade_drive(self.controls.forward(), self.controls.turn())
 
