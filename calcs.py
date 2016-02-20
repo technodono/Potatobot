@@ -22,8 +22,8 @@ defenseSeparation = inches_in_feet(52.5)
 def make_boulder(x, y, boulderEdge=defaultEdge):
     b = []
     # leftmost top point
-    x1 = x - boulderEdge / 2
-    y1 = y
+    x1 = x - boulderEdge / 6
+    y1 = y - boulderEdge / 2
     b.append([x1, y1])
     # rightmost top point
     x2 = x1 + boulderEdge
@@ -73,8 +73,7 @@ print_boulder(6, make_boulder(midLineX, boulderSeparation * 6))
 
 
 # make a barrier with top left corner at x,y and thickness of thick
-def print_barrier(x, y, thick):
-    length = 4
+def print_barrier(x, y, length=4, thick=0.1):
     print(',{')
     print('"color": "black",')
     print("\"label\": \"defense divider\",")
@@ -82,5 +81,5 @@ def print_barrier(x, y, thick):
     print('}')
 
 for i in range(6):
-    print_barrier(15.95, 4.458 + i * defenseSeparation, 0.1)
+    print_barrier(15.95, 4.458 + i * defenseSeparation)
 
