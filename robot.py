@@ -13,7 +13,8 @@ BACK_LEFT = 2
 FRONT_LEFT = 3
 GAME_ARM = 4
 
-CAMERA_SERVO = 5  # PWM
+LEFT_GRABBER_SERVO = 5  # PWM
+RIGHT_GRABBER_SERVO = 6  # PWM
 JOYSTICK_PORT = 0
 
 
@@ -26,7 +27,8 @@ class MyRobot(wpilib.IterativeRobot):
         self.leftBack = wpilib.VictorSP(BACK_LEFT)
         self.rightFront = wpilib.VictorSP(FRONT_RIGHT)
         self.rightBack = wpilib.VictorSP(BACK_RIGHT)
-        self.camera_pan = wpilib.Servo(CAMERA_SERVO)
+        self.left_grabber = wpilib.Servo(LEFT_GRABBER_SERVO)
+        self.right_grabber = wpilib.Servo(RIGHT_GRABBER_SERVO)
         self.game_arm = wpilib.VictorSP(GAME_ARM)
         self.camera = wpilib.USBCamera()
         self.camera.setExposureManual(50)
@@ -39,6 +41,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT))
 
         self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
+
 
     def disabledInit(self):
         self.logger.info("Disabled Mode")
@@ -59,10 +62,12 @@ class MyRobot(wpilib.IterativeRobot):
         right_value = -forward - soft_turn
         right_value *= math.fabs(right_value)
         right_value *= multiplier
-        self.leftFront.set(left_value)
-        self.leftBack.set(left_value)
-        self.rightFront.set(-right_value)
-        self.rightBack.set(-right_value)
+
+        self.leftFront.set(left_value if self.controls.lf_toggle else 0)
+        self.leftBack.set(left_value if self.controls.lb_toggle else 0)
+        self.rightFront.set(-right_value if self.controls.rf_toggle else 0)
+        self.rightBack.set(-right_value if self.controls.rb_toggle else 0)
+
 
     def autonomousInit(self):
         self.logger.info("Autonomous Mode")
@@ -87,17 +92,29 @@ class MyRobot(wpilib.IterativeRobot):
 
     # What to do continuously in teleop
     def teleopPeriodic(self):
+        self.controls.update()
         self.arcade_drive(self.controls.forward(), self.controls.turn())
 
         if self.controls.debug_button():
             self.print_debug_stuff()
-        self.camera_position(self.controls.get_camera_position())
+        self.grabber_position(self.controls.grabber())
 
         exp = self.camera.exposureValue
         if self.controls.exposure_up_button() and exp < 100:
             self.camera.setExposureManual(exp + 10)
         if self.controls.exposure_down_button() and exp > 0:
             self.camera.setExposureManual(exp - 10)
+        if self.controls.lift_portcullis():
+            self.game_arm.set(1.0)
+            if int(self.timer.get() * 10) % 5 == 0:
+                self.logger.warn("lifting")
+        elif self.controls.lower_portcullis():
+            self.game_arm.set(-1.0)
+            if int(self.timer.get() * 10) % 5 == 0:
+                self.logger.warn("lowering")
+        else:
+            self.game_arm.set(0)
+
 
     # These lines are needed to keep the motors turned off when the robot is disabled
     def disabledPeriodic(self):
@@ -117,13 +134,14 @@ class MyRobot(wpilib.IterativeRobot):
         except:
             self.logger.error("error trying to print debug !!")
 
-    def camera_position(self, direction):
+    def grabber_position(self, direction):
         """
         Points the camera in a left/right direction.
         :param direction: float between -1 (left) and 1 (right) with 0 being straight ahead
         :return:
         """
-        self.camera_pan.setAngle((direction + 1) * 90.0)
+        self.left_grabber.setAngle((direction + 1) * 90.0)
+        self.right_grabber.setAngle((-direction + 1) * 90.0)
 
 
 # The following lines of code are ALWAYS needed to deploy code onto the robot
