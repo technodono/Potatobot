@@ -36,8 +36,6 @@ class MyRobot(wpilib.IterativeRobot):
 
         server = wpilib.CameraServer.getInstance()
         server.startAutomaticCapture(self.camera)
-        # at the moment we are using the ps3 controller for the simulator, if we want to use the real
-        # joystick we will need to change this:
         self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT))
 
         self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
@@ -105,7 +103,7 @@ class MyRobot(wpilib.IterativeRobot):
         if self.controls.lift_portcullis():
             self.game_arm.set(1.0)
             if int(self.timer.get() * 10) % 5 == 0:
-                self.logger.warn("lifting")
+                self.logger.debug("lifting")
         elif self.controls.lower_portcullis():
             self.game_arm.set(-1.0)
             if int(self.timer.get() * 10) % 5 == 0:
