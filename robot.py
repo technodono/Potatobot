@@ -23,13 +23,13 @@ class MyRobot(wpilib.IterativeRobot):
 
     def robotInit(self):  # creates all the objects needed to operate the robot
         self.pdp = wpilib.PowerDistributionPanel()
-        self.leftFront = wpilib.VictorSP(FRONT_LEFT)
-        self.leftBack = wpilib.VictorSP(BACK_LEFT)
-        self.rightFront = wpilib.VictorSP(FRONT_RIGHT)
-        self.rightBack = wpilib.VictorSP(BACK_RIGHT)
+        self.leftFront = wpilib.Victor(FRONT_LEFT)
+        self.leftBack = wpilib.Victor(BACK_LEFT)
+        self.rightFront = wpilib.Victor(FRONT_RIGHT)
+        self.rightBack = wpilib.Victor(BACK_RIGHT)
         self.left_grabber = wpilib.Servo(LEFT_GRABBER_SERVO)
         self.right_grabber = wpilib.Servo(RIGHT_GRABBER_SERVO)
-        self.game_arm = wpilib.VictorSP(GAME_ARM)
+        self.game_arm = wpilib.Victor(GAME_ARM)
         self.camera = wpilib.USBCamera()
         self.camera.setExposureManual(50)
         self.camera.updateSettings()
@@ -41,7 +41,6 @@ class MyRobot(wpilib.IterativeRobot):
         self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT))
 
         self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
-
 
     def disabledInit(self):
         self.logger.info("Disabled Mode")
@@ -89,7 +88,6 @@ class MyRobot(wpilib.IterativeRobot):
     def teleopInit(self):
         self.logger.info("Teleoperated Mode")
 
-
     # What to do continuously in teleop
     def teleopPeriodic(self):
         self.controls.update()
@@ -114,7 +112,6 @@ class MyRobot(wpilib.IterativeRobot):
                 self.logger.warn("lowering")
         else:
             self.game_arm.set(0)
-
 
     # These lines are needed to keep the motors turned off when the robot is disabled
     def disabledPeriodic(self):
