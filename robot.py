@@ -11,7 +11,7 @@ BACK_RIGHT = 0
 FRONT_RIGHT = 1
 BACK_LEFT = 2
 FRONT_LEFT = 3
-GAME_ARM = 4
+PORTCULLIS_ARM = 4
 
 LEFT_GRABBER_SERVO = 5  # PWM
 RIGHT_GRABBER_SERVO = 6  # PWM
@@ -29,7 +29,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.rightBack = wpilib.Victor(BACK_RIGHT)
         self.left_grabber = wpilib.Servo(LEFT_GRABBER_SERVO)
         self.right_grabber = wpilib.Servo(RIGHT_GRABBER_SERVO)
-        self.game_arm = wpilib.Victor(GAME_ARM)
+        self.portcullis_arm = wpilib.Victor(PORTCULLIS_ARM)
         self.camera = wpilib.USBCamera()
         self.camera.setExposureManual(50)
         self.camera.updateSettings()
@@ -107,11 +107,11 @@ class MyRobot(wpilib.IterativeRobot):
         if self.controls.exposure_down_button() and exp > 0:
             self.camera.setExposureManual(exp - 10)
         if self.controls.lift_portcullis():
-            self.game_arm.set(1.0)
+            self.portcullis_arm.set(1.0)
         elif self.controls.lower_portcullis():
-            self.game_arm.set(-1.0)
+            self.portcullis_arm.set(-1.0)
         else:
-            self.game_arm.set(0)
+            self.portcullis_arm.set(0)
 
         wpilib.SmartDashboard.putNumber("control_preset", exp)
         preset = wpilib.SmartDashboard.getString("control_preset", "old_joystick")
@@ -129,6 +129,8 @@ class MyRobot(wpilib.IterativeRobot):
         self.leftBack.set(0)
         self.rightFront.set(0)
         self.rightBack.set(0)
+        self.portcullis_arm.set(0)
+
 
     def print_debug_stuff(self):
         try:
