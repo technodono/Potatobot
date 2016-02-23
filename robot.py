@@ -30,17 +30,23 @@ class MyRobot(wpilib.IterativeRobot):
         self.left_grabber = wpilib.Servo(LEFT_GRABBER_SERVO)
         self.right_grabber = wpilib.Servo(RIGHT_GRABBER_SERVO)
         self.portcullis_arm = wpilib.Victor(PORTCULLIS_ARM)
-        self.camera = wpilib.USBCamera()
-        self.camera.setExposureManual(50)
-        self.camera.updateSettings()
+        try:
+            self.camera = wpilib.USBCamera()
+            self.camera.setExposureManual(50)
+            self.camera.updateSettings()
+        except:
+            pass
 
-        server = wpilib.CameraServer.getInstance()
-        server.startAutomaticCapture(self.camera)
+        try:
+            server = wpilib.CameraServer.getInstance()
+            server.startAutomaticCapture(self.camera)
+        except:
+            self.logger.warn("camera disabled because it exploded")
+
         # at the moment we are using the ps3 controller for the simulator, if we want to use the real
         # joystick we will need to change this:
-        joystick = wpilib.Joystick(JOYSTICK_PORT)
-        self.oldcontrols = OldControls(joystick)
-        self.newcontrols = NewControls(joystick)
+        self.oldcontrols = OldControls(wpilib.Joystick(JOYSTICK_PORT))
+        self.newcontrols = NewControls(wpilib.Joystick(JOYSTICK_PORT))
 
         self.controls = self.oldcontrols
 
@@ -55,9 +61,9 @@ class MyRobot(wpilib.IterativeRobot):
     # The following lines define the arcade drive settings
     def arcade_drive(self, forward, turn):
         # use a parabolic throttle response profile
-        soft_turn = turn * turn
-        if turn < 0:
-            soft_turn = -soft_turn
+        soft_turn = turn #* turn
+        #if turn < 0:
+        #    soft_turn = -soft_turn
         left_value = -forward + soft_turn
         left_value *= math.fabs(left_value)
         multiplier = self.controls.get_throttle_multiplier()
@@ -101,26 +107,33 @@ class MyRobot(wpilib.IterativeRobot):
             self.print_debug_stuff()
         self.grabber_position(self.controls.grabber())
 
-        exp = self.camera.exposureValue
-        if self.controls.exposure_up_button() and exp < 100:
-            self.camera.setExposureManual(exp + 10)
-        if self.controls.exposure_down_button() and exp > 0:
-            self.camera.setExposureManual(exp - 10)
+        try:
+            exp = self.camera.exposureValue
+            if self.controls.exposure_up_button() and exp < 100:
+                self.camera.setExposureManual(exp + 10)
+            if self.controls.exposure_down_button() and exp > 0:
+                self.camera.setExposureManual(exp - 10)
+        except:
+            pass
+
         if self.controls.lift_portcullis():
-            self.portcullis_arm.set(1.0)
+            self.portcullis_arm.set(0.5)
+            self.logger.debug("raising")
         elif self.controls.lower_portcullis():
-            self.portcullis_arm.set(-1.0)
+            self.portcullis_arm.set(-0.5)
+            self.logger.debug("lowering")
         else:
             self.portcullis_arm.set(0)
 
-        wpilib.SmartDashboard.putNumber("control_preset", exp)
-        preset = wpilib.SmartDashboard.getString("control_preset", "old_joystick")
-        if preset == "old_joystick" and self.controls != self.oldcontrols:
-            self.logger.debug("switching to old controls")
-            self.controls = self.oldcontrols
-        elif preset == "new_joystick" and self.controls != self.newcontrols:
-            self.logger.debug("switching to new controls")
-            self.control = self.newcontrols
+
+        # wpilib.SmartDashboard.putNumber("control_preset", exp)
+        # preset = wpilib.SmartDashboard.getString("control_preset", "old_joystick")
+        # if preset == "old_joystick" and self.controls != self.oldcontrols:
+        #     self.logger.debug("switching to old controls")
+        #     self.controls = self.oldcontrols
+        # elif preset == "new_joystick" and self.controls != self.newcontrols:
+        #     self.logger.debug("switching to new controls")
+        #     self.control = self.newcontrols
 
 
     # These lines are needed to keep the motors turned off when the robot is disabled
@@ -144,11 +157,6 @@ class MyRobot(wpilib.IterativeRobot):
             self.logger.error("error trying to print debug !!")
 
     def grabber_position(self, direction):
-        """
-        Points the camera in a left/right direction.
-        :param direction: float between -1 (left) and 1 (right) with 0 being straight ahead
-        :return:
-        """
         self.left_grabber.setAngle((direction + 1) * 90.0)
         self.right_grabber.setAngle((-direction + 1) * 90.0)
 
