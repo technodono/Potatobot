@@ -4,7 +4,7 @@ import math
 
 import wpilib
 
-from rigs.controls import OldControls
+from rigs.controls import OldControls, NewControls
 
 #  motor port assignments
 BACK_RIGHT = 0
@@ -36,7 +36,13 @@ class MyRobot(wpilib.IterativeRobot):
 
         server = wpilib.CameraServer.getInstance()
         server.startAutomaticCapture(self.camera)
-        self.controls = OldControls(wpilib.Joystick(JOYSTICK_PORT))
+        # at the moment we are using the ps3 controller for the simulator, if we want to use the real
+        # joystick we will need to change this:
+        joystick = wpilib.Joystick(JOYSTICK_PORT)
+        self.oldcontrols = OldControls(joystick)
+        self.newcontrols = NewControls(joystick)
+
+        self.controls = self.oldcontrols
 
         self.timer = wpilib.Timer()  # creates a timer to time the autonomous mode
 
@@ -102,14 +108,20 @@ class MyRobot(wpilib.IterativeRobot):
             self.camera.setExposureManual(exp - 10)
         if self.controls.lift_portcullis():
             self.game_arm.set(1.0)
-            if int(self.timer.get() * 10) % 5 == 0:
-                self.logger.debug("lifting")
         elif self.controls.lower_portcullis():
             self.game_arm.set(-1.0)
-            if int(self.timer.get() * 10) % 5 == 0:
-                self.logger.warn("lowering")
         else:
             self.game_arm.set(0)
+
+        wpilib.SmartDashboard.putNumber("control_preset", exp)
+        preset = wpilib.SmartDashboard.getString("control_preset", "old_joystick")
+        if preset == "old_joystick" and self.controls != self.oldcontrols:
+            self.logger.debug("switching to old controls")
+            self.controls = self.oldcontrols
+        elif preset == "new_joystick" and self.controls != self.newcontrols:
+            self.logger.debug("switching to new controls")
+            self.control = self.newcontrols
+
 
     # These lines are needed to keep the motors turned off when the robot is disabled
     def disabledPeriodic(self):
