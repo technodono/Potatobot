@@ -65,7 +65,7 @@ class MyRobot(wpilib.IterativeRobot):
         right_value *= math.fabs(right_value)
         right_value *= multiplier
 
-        return left_value, -right_value
+        return left_value, -right_value  # TODO invert the right side at the controller config level
 
     # drive the tank wheels according to forward and turn parameters
     def arcade_drive(self, forward, turn):
