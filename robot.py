@@ -30,18 +30,15 @@ class MyRobot(wpilib.IterativeRobot):
         self.left_grabber = wpilib.Servo(LEFT_GRABBER_SERVO)
         self.right_grabber = wpilib.Servo(RIGHT_GRABBER_SERVO)
         self.portcullis_arm = wpilib.Victor(PORTCULLIS_ARM)
+
         try:
             self.camera = wpilib.USBCamera()
             self.camera.setExposureManual(50)
             self.camera.updateSettings()
+            self.server = wpilib.CameraServer.getInstance()
+            self.server.startAutomaticCapture(self.camera)
         except:
             pass
-
-        try:
-            server = wpilib.CameraServer.getInstance()
-            server.startAutomaticCapture(self.camera)
-        except:
-            self.logger.warn("camera disabled because it exploded")
 
         # at the moment we are using the ps3 controller for the simulator, if we want to use the real
         # joystick we will need to change this:
@@ -108,6 +105,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.grabber_position(self.controls.grabber())
 
         try:
+            self.camera
             exp = self.camera.exposureValue
             if self.controls.exposure_up_button() and exp < 100:
                 self.camera.setExposureManual(exp + 10)
@@ -146,15 +144,18 @@ class MyRobot(wpilib.IterativeRobot):
 
 
     def print_debug_stuff(self):
+        self.logger.info("debug stuff!!")
+
         try:
-            self.logger.info("debug stuff!!")
+            # only if camera is configured
+            self.camera
             self.logger.info("camera active: " + str(self.camera.active))
             self.logger.info("camera name: " + str(self.camera.name))
             self.logger.info("camera exposure: " + str(self.camera.exposureValue))
             self.logger.info("camera fps: " + str(self.camera.fps))
             self.logger.info("camera res: " + str(self.camera.width) + "x" + str(self.camera.height))
         except:
-            self.logger.error("error trying to print debug !!")
+            pass
 
     def grabber_position(self, direction):
         self.left_grabber.setAngle((direction + 1) * 90.0)
