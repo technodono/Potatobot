@@ -56,7 +56,6 @@ class MyRobot(wpilib.IterativeRobot):
         self.logger.info("Test Mode")
 
     def calculate_drive(self, forward, turn):
-        # use a parabolic throttle response profile
         left_value = -forward + turn
         left_value *= math.fabs(left_value)
         multiplier = self.controls.get_throttle_multiplier()
