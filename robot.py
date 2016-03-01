@@ -55,25 +55,26 @@ class MyRobot(wpilib.IterativeRobot):
     def testInit(self):
         self.logger.info("Test Mode")
 
-    # The following lines define the arcade drive settings
-    def arcade_drive(self, forward, turn):
+    def calculate_drive(self, forward, turn):
         # use a parabolic throttle response profile
-        soft_turn = turn #* turn
-        #if turn < 0:
-        #    soft_turn = -soft_turn
-        left_value = -forward + soft_turn
+        left_value = -forward + turn
         left_value *= math.fabs(left_value)
         multiplier = self.controls.get_throttle_multiplier()
         left_value *= multiplier
-        right_value = -forward - soft_turn
+        right_value = -forward - turn
         right_value *= math.fabs(right_value)
         right_value *= multiplier
 
+        return left_value, -right_value
+
+    # drive the tank wheels according to forward and turn parameters
+    def arcade_drive(self, forward, turn):
+        left_value, right_value = self.calculate_drive(forward, turn)
+
         self.leftFront.set(left_value if self.controls.lf_toggle else 0)
         self.leftBack.set(left_value if self.controls.lb_toggle else 0)
-        self.rightFront.set(-right_value if self.controls.rf_toggle else 0)
-        self.rightBack.set(-right_value if self.controls.rb_toggle else 0)
-
+        self.rightFront.set(right_value if self.controls.rf_toggle else 0)
+        self.rightBack.set(right_value if self.controls.rb_toggle else 0)
 
     def autonomousInit(self):
         self.logger.info("Autonomous Mode")
