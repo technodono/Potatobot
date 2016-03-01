@@ -13,8 +13,6 @@ BACK_LEFT = 2
 FRONT_LEFT = 3
 PORTCULLIS_ARM = 4
 
-LEFT_GRABBER_SERVO = 5  # PWM
-RIGHT_GRABBER_SERVO = 6  # PWM
 JOYSTICK_PORT = 0
 
 
@@ -27,8 +25,7 @@ class MyRobot(wpilib.IterativeRobot):
         self.leftBack = wpilib.Victor(BACK_LEFT)
         self.rightFront = wpilib.Victor(FRONT_RIGHT)
         self.rightBack = wpilib.Victor(BACK_RIGHT)
-        self.left_grabber = wpilib.Servo(LEFT_GRABBER_SERVO)
-        self.right_grabber = wpilib.Servo(RIGHT_GRABBER_SERVO)
+
         self.portcullis_arm = wpilib.Victor(PORTCULLIS_ARM)
 
         try:
@@ -102,7 +99,6 @@ class MyRobot(wpilib.IterativeRobot):
 
         if self.controls.debug_button():
             self.print_debug_stuff()
-        self.grabber_position(self.controls.grabber())
 
         try:
             self.camera
@@ -156,10 +152,6 @@ class MyRobot(wpilib.IterativeRobot):
             self.logger.info("camera res: " + str(self.camera.width) + "x" + str(self.camera.height))
         except:
             pass
-
-    def grabber_position(self, direction):
-        self.left_grabber.setAngle((direction + 1) * 90.0)
-        self.right_grabber.setAngle((-direction + 1) * 90.0)
 
 
 # The following lines of code are ALWAYS needed to deploy code onto the robot
