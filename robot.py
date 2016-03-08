@@ -39,8 +39,8 @@ class MyRobot(wpilib.IterativeRobot):
 
         # at the moment we are using the ps3 controller for the simulator, if we want to use the real
         # joystick we will need to change this:
-        self.oldcontrols = OldControls(wpilib.Joystick(JOYSTICK_PORT))
-        self.newcontrols = NewControls(wpilib.Joystick(JOYSTICK_PORT))
+        self.oldcontrols = OldControls(wpilib.Joystick(JOYSTICK_PORT), self.isTest)
+        self.newcontrols = NewControls(wpilib.Joystick(JOYSTICK_PORT), self.isTest)
 
         self.controls = self.oldcontrols
 
@@ -67,10 +67,11 @@ class MyRobot(wpilib.IterativeRobot):
     def arcade_drive(self, forward, turn):
         left_value, right_value = self.calculate_drive(forward, turn)
 
-        self.leftFront.set(left_value if self.controls.lf_toggle else 0)
-        self.leftBack.set(left_value if self.controls.lb_toggle else 0)
-        self.rightFront.set(right_value if self.controls.rf_toggle else 0)
-        self.rightBack.set(right_value if self.controls.rb_toggle else 0)
+        # in test mode, if the motor toggle for a wheel is disabled, we keep it set to 0
+        self.leftFront.set(left_value if self.controls.lf_toggle or not self.isTest() else 0)
+        self.leftBack.set(left_value if self.controls.lb_toggle or not self.isTest() else 0)
+        self.rightFront.set(right_value if self.controls.rf_toggle or not self.isTest() else 0)
+        self.rightBack.set(right_value if self.controls.rb_toggle or not self.isTest() else 0)
 
     def autonomousInit(self):
         self.logger.info("Autonomous Mode")
@@ -152,6 +153,11 @@ class MyRobot(wpilib.IterativeRobot):
             self.logger.info("camera res: " + str(self.camera.width) + "x" + str(self.camera.height))
         except:
             pass
+
+    def testPeriodic(self):
+
+        self.teleopPeriodic()
+
 
 
 # The following lines of code are ALWAYS needed to deploy code onto the robot

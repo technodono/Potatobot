@@ -50,7 +50,8 @@ class OldControls(Controls):
 
     logger = logging.getLogger('old_controls')
 
-    def __init__(self, joystick):
+    def __init__(self, joystick, is_test):
+        self.isTest = is_test
         self.stick = joystick
         self.multiplier = 1
         # motors can be disabled with these:
@@ -104,23 +105,23 @@ class OldControls(Controls):
         return self.stick.getX()
 
     def update(self):
-
-        if self.stick.getRawButton(self.TOGGLE_RF) and self.toggle_listen < self.timer.get():
-            self.rf_toggle = not self.rf_toggle
-            self.logger.info("Right Front Motor %s" % self.rf_toggle)
-            self.toggle_listen = self.timer.get() + 1
-        if self.stick.getRawButton(self.TOGGLE_LF) and self.toggle_listen < self.timer.get():
-            self.lf_toggle = not self.lf_toggle
-            self.logger.info("Left Front Motor %s" % self.lf_toggle)
-            self.toggle_listen = self.timer.get() + 1
-        if self.stick.getRawButton(self.TOGGLE_RB) and self.toggle_listen < self.timer.get():
-            self.rb_toggle = not self.rb_toggle
-            self.logger.info("Right Back Motor %s" % self.rb_toggle)
-            self.toggle_listen = self.timer.get() + 1
-        if self.stick.getRawButton(self.TOGGLE_LB) and self.toggle_listen < self.timer.get():
-            self.lb_toggle = not self.lb_toggle
-            self.logger.info("Left Back Motor %s" % self.lb_toggle)
-            self.toggle_listen = self.timer.get() + 1
+        if self.isTest():
+            if self.stick.getRawButton(self.TOGGLE_RF) and self.toggle_listen < self.timer.get():
+                self.rf_toggle = not self.rf_toggle
+                self.logger.info("Right Front Motor %s" % ("ON" if self.rf_toggle else "OFF"))
+                self.toggle_listen = self.timer.get() + 1
+            if self.stick.getRawButton(self.TOGGLE_LF) and self.toggle_listen < self.timer.get():
+                self.lf_toggle = not self.lf_toggle
+                self.logger.info("Left Front Motor %s" % ("ON" if self.lf_toggle else "OFF"))
+                self.toggle_listen = self.timer.get() + 1
+            if self.stick.getRawButton(self.TOGGLE_RB) and self.toggle_listen < self.timer.get():
+                self.rb_toggle = not self.rb_toggle
+                self.logger.info("Right Back Motor %s" % ("ON" if self.rb_toggle else "OFF"))
+                self.toggle_listen = self.timer.get() + 1
+            if self.stick.getRawButton(self.TOGGLE_LB) and self.toggle_listen < self.timer.get():
+                self.lb_toggle = not self.lb_toggle
+                self.logger.info("Left Back Motor %s" % ("ON" if self.lb_toggle else "OFF"))
+                self.toggle_listen = self.timer.get() + 1
 
 
 # TODO ps3 controls, keyboard controls and alternate joystick controls
@@ -133,8 +134,9 @@ class NewControls(Controls):
 
     logger = logging.getLogger('new_controls')
 
-    def __init__(self, joystick):
+    def __init__(self, joystick, is_test):
         self.stick = joystick
+        self.isTest = is_test
         self.multiplier = 1
         self.throttle_toggle = False
 
