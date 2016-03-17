@@ -42,6 +42,8 @@ class OldControls(Controls):
     EXPOSURE_DOWN_BUTTON = 11
     TRIGGER = 1
     THUMB_BUTTON = 2
+    BALL_CATCHER_UP = 5
+    BALL_CATCHER_DOWN = 3
 
     TOGGLE_LB = 3
     TOGGLE_RB = 4
@@ -103,6 +105,12 @@ class OldControls(Controls):
 
     def grabber(self):
         return self.stick.getX()
+
+    def ball_catcher_up(self):
+        return self.stick.getRawButton(self.BALL_CATCHER_UP)
+
+    def ball_catcher_down(self):
+        return self.stick.getRawButton(self.BALL_CATCHER_DOWN)
 
     def update(self):
         if self.isTest():
