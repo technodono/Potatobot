@@ -75,8 +75,9 @@ def make_barrier(x, y, length=4, thick=inches_in_feet(1)):
 config = {
     'pyfrc': {
         'robot': {
-            "w": 2.4,
-            "h": 2,
+            # 2.4 x 2 plus bumpers
+            "w": 2.8,
+            "h": 2.4,
             "starting_x": 25,
             "starting_y": 20,
             "starting_angle": 0
