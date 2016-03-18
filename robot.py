@@ -12,7 +12,6 @@ FRONT_RIGHT = 1
 BACK_LEFT = 2
 FRONT_LEFT = 3
 PORTCULLIS_ARM = 4
-BALL_CATCHER = 5
 
 JOYSTICK_PORT = 0
 
@@ -32,12 +31,7 @@ class MyRobot(wpilib.IterativeRobot):
 
         self.portcullis_arm = wpilib.Victor(PORTCULLIS_ARM)
         self.portcullis_pot = wpilib.AnalogInput(PORTCULLIS_POT_CHANNEL)
-        prefs = wpilib.Preferences.getInstance()
-        port_current = self.portcullis_pot.getValue()
-        self.portcullis_top = prefs.getFloat("port-top", port_current)
-        self.portcullis_bottom = prefs.getFloat("port-bottom", port_current)
-        self.ball_catcher_up = prefs.getFloat("ball catcher up")
-        self.ball_catcher_down = prefs.getFloat("ball catcher down")
+
         try:
             self.camera = wpilib.USBCamera()
             self.camera.setExposureManual(50)
@@ -91,14 +85,11 @@ class MyRobot(wpilib.IterativeRobot):
 
     # What to do in autonomous
     def autonomousPeriodic(self):
-        pass
-        # commented this out for now, it's dangerous to leave it here without any modelling or testing
-        # this sets up code that makes the robot drive forward for two seconds, hence the timer
-        #if self.timer.get() < 2:
-        #    self.arcade_drive(0.7, 0)  # sets the robot to drive forward at 0.7 of the normal speed
-        #else:
-        #    self.arcade_drive(0, 0)
-
+        if self.timer.get() < 3:
+            self.arcade_drive(-0.7, 0)
+        else:
+            self.arcade_drive(0, 0)
+            
     # What to do at the beginning of teleop
     def teleopInit(self):
         self.logger.info("Teleoperated Mode")
@@ -120,12 +111,6 @@ class MyRobot(wpilib.IterativeRobot):
                 self.camera.setExposureManual(exp - 10)
         except:
             pass
-        if self.controls.ball_catcher_up():
-            self.ball_catcher.set(0.5)
-            self.logger.debug("raising ball catcher")
-        if self.controls.ball_catcher_down():
-            self.ball_catcher.set(-0.5)
-            self.logger.debug("lowering ball catcher")
         if self.controls.lift_portcullis():
             self.portcullis_arm.set(1)
             self.logger.debug("raising arm")
@@ -135,17 +120,6 @@ class MyRobot(wpilib.IterativeRobot):
         else:
             self.portcullis_arm.set(0)
 
-
-        # wpilib.SmartDashboard.putNumber("control_preset", exp)
-        # preset = wpilib.SmartDashboard.getString("control_preset", "old_joystick")
-        # if preset == "old_joystick" and self.controls != self.oldcontrols:
-        #     self.logger.debug("switching to old controls")
-        #     self.controls = self.oldcontrols
-        # elif preset == "new_joystick" and self.controls != self.newcontrols:
-        #     self.logger.debug("switching to new controls")
-        #     self.control = self.newcontrols
-
-
     # These lines are needed to keep the motors turned off when the robot is disabled
     def disabledPeriodic(self):
         self.leftFront.set(0)
@@ -153,7 +127,6 @@ class MyRobot(wpilib.IterativeRobot):
         self.rightFront.set(0)
         self.rightBack.set(0)
         self.portcullis_arm.set(0)
-        self.ball_catcher.set(0)
 
 
     def print_debug_stuff(self):
