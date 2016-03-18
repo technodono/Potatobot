@@ -21,6 +21,13 @@ def test_drive():
     r.controls.multiplier = 1
     # full right
     l, r = r.calculate_drive(0.0, 1.0)
-    print(l, r)
     assert l == 1.0 and r == 1.0
+
+def test_drive():
+    r = MyRobot()
+    r.controls = MockControls()
+    r.controls.multiplier = 1
+    # should be straight forward (?)
+    l, r = r.calculate_drive(1.0, 0.0)
+    assert l == -1.0 and r == 1.0
 

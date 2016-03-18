@@ -17,9 +17,6 @@ class Controls:
     def debug_button(self):
         print("override me")
 
-    def get_camera_position(self):
-        print("override me")
-
     def exposure_up_button(self):
         print("override me")
 
@@ -32,6 +29,13 @@ class Controls:
     def turn(self):
         print("override me")
 
+    def lift_portcullis(self):
+        print("override me")
+
+    def lower_portcullis(self):
+        print("override me")
+
+
 
 class OldControls(Controls):
 
@@ -42,8 +46,6 @@ class OldControls(Controls):
     EXPOSURE_DOWN_BUTTON = 11
     TRIGGER = 1
     THUMB_BUTTON = 2
-    BALL_CATCHER_UP = 5
-    BALL_CATCHER_DOWN = 3
 
     TOGGLE_LB = 3
     TOGGLE_RB = 4
@@ -103,9 +105,6 @@ class OldControls(Controls):
     def lower_portcullis(self):
         return self.stick.getRawButton(self.THUMB_BUTTON)
 
-    def grabber(self):
-        return self.stick.getX()
-
     def ball_catcher_up(self):
         return self.stick.getRawButton(self.BALL_CATCHER_UP)
 
@@ -151,16 +150,12 @@ class NewControls(Controls):
     def get_throttle_multiplier(self):
         new_multiplier = (-self.stick.getThrottle() + 1) / 2
         if math.fabs(new_multiplier - self.multiplier) > 0.1:
-            self.logger.info("Throttle: " + str(new_multiplier))
             wpilib.SmartDashboard.putString('/SmartDashboard/throttle', str(new_multiplier))
         self.multiplier = new_multiplier
         return self.multiplier
 
     def debug_button(self):
         return self.stick.getRawButton(self.DEBUG_BUTTON)
-
-    def get_camera_position(self):
-        return self.stick.getX()
 
     def exposure_up_button(self):
         return self.stick.getRawButton(self.EXPOSURE_UP_BUTTON)
