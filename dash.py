@@ -31,7 +31,5 @@ cc = ChooserControl("control_preset",
 sd = NetworkTable.getTable("SmartDashboard")
 
 while True:
-    time.sleep(5)
-    sd.putString("control_preset", "old_joystick")
-    time.sleep(5)
-    sd.putString("control_preset",4 "new_joystick")
+    time.sleep(1)
+
