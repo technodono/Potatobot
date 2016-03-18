@@ -86,7 +86,10 @@ class MyRobot(wpilib.IterativeRobot):
     # What to do in autonomous
     def autonomousPeriodic(self):
         if self.timer.get() < 3:
-            self.arcade_drive(-0.7, 0)
+            self.arcade_drive(-0.8, 0)
+        elif self.timer.get() < 5:
+            wiggle_turn = math.cos(self.timer.get()*4*math.pi)*0.5
+            self.arcade_drive(-1, wiggle_turn)
         else:
             self.arcade_drive(0, 0)
             
