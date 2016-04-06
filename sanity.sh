@@ -48,13 +48,14 @@ fatalcheck git || exit $?
 
 # check if the repo is updated subsequent to the rename
 git config --get remote.origin.url \
-    | grep -q 'git@github.com:rIGS2016/Potatobot.git' \
+    | egrep -q '(git@|https://)github.com(/|:)rIGS2016/' \
+    && good=false \
     && cat <<EOM
 
 Yo, code poet, you have the old remote repo. You need to run this: 
 
 $(echo $'\e[34m')
-  git remote --set-url origin git@github.com:rIGSteam/Potatobot.git
+  git remote set-url origin git@github.com:rIGSteam/Potatobot.git
 $(echo $'\e[0m')
 
 EOM
