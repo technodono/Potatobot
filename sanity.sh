@@ -54,7 +54,7 @@ git config --get remote.origin.url \
 Yo, code poet, you have the old remote repo. You need to run this: 
 
 $(echo $'\e[34m')
-  git config --set remote.origin.url git@github.com:rIGSteam/Potatobot.git
+  git remote --set-url origin git@github.com:rIGSteam/Potatobot.git
 $(echo $'\e[0m')
 
 EOM
