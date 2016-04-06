@@ -1,7 +1,6 @@
 import json
 
 # helper program for calculating coordinates of boulders on the field
-# TODO make this print the whole config.json file
 
 
 def inches_in_feet(inches):
