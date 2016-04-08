@@ -18,6 +18,14 @@ To use the joystick you need pygame. If you have hombrew on OSX, you can install
 
     brew install pygame --with-python3
 
+# Run the tests!
+
+The best way to see if things work is by running the tests. Here's how:
+
+    python3 robot.py test
+
+If there are any failures or error messages, you are not good to push nor should you expect the robot or even the simulator to work 
+
 # Running in the simulator
 
 Do this:
