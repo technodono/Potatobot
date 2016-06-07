@@ -31,7 +31,7 @@ def red(text):
 
 def fatal(result, name, instructions=""):
     if (result):
-        print("Checking for " + magenta(name) + " " + green("✔"))
+        print("checking for " + magenta(name) + " " + green("✔"))
     else:
         print("You do not have " + magenta(name) + " installed! " + red("✖ FAIL"))
         if (len(instructions) > 0):
