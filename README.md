@@ -4,18 +4,39 @@ These is the repository for code for Major Tom - for some reason it is known as 
 
 # Preparation
 
-If you already know *python 3* and *pip* you can skip this section, otherwise read on and You might be ready to start hacking on the code, but if you have not written python3 code on
+If you already know *python 3* and *pip* you can skip this section, otherwise read on and You might be ready to start hacking on the code, but if you have not written python3 code on this platform before, you should definitely read all of this.
 
 Before you can work on this project, you will need a few tools installed on your computer. Some may already be installed. We work extensively with *command line tools* which mean you type a command in a text area, hit enter and the command is executed. If it works, depending on the command it may print something.
 
+On Windows this means you have to use the _Command Prompt_.
+
+On Mac this means you have to use _Terminal_.
+
+If you're using Linux, open a _terminal_, _shell_ or _xterm_.
+
+If you have Python 3 installed on your computer, you can run the following included sanity check script:
+
+On Mac (use Terminal) or Linux:
+
+    ./sanity.py
+
+On Windows (open a *Command Prompt* in this project directory):
+
+    py sanity.py
+
+Run this script to see if your computer is set up and ready to code. If _computer says no_ then read on to learn how to get the necessary tools installed.
+
 # Installation
 
-Check out <https://github.com/robotpy/pyfrc> for reference. There are a number of commands you need to run.
+You have to do this stuff _once_ on your computer to make sure it is ready to work on the code.
+
 You need to install the pyfrc library:
 
     pip3 install pyfrc
 
-If you've already installed it you should make sure you're using the latest from time to time:
+Have a look at out <https://github.com/robotpy/pyfrc> for detailed info on this library and how it works. 
+
+If you installed it weeks or months ago should make sure you're using the latest from time to time:
 
     pip3 install pyfrc --upgrade
 
