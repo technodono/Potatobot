@@ -66,7 +66,7 @@ fatalexe("git")
 if (mac): 
     if (find_executable("brew")):
         result = run(["brew", "list", "pygame"], stdout=PIPE, stderr=PIPE, universal_newlines=True)
-        fatal(result.returncode == 0, "pygame", "brew install pygame")
+        fatal(result.returncode == 0, "pygame", "brew install pygame --with-python3")
             
 # TODO check if pygame is installed from windows
 
