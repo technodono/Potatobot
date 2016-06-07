@@ -84,7 +84,7 @@ for module in modules:
 result = run(['git', 'config', '--get', 'remote.origin.url'], stderr=PIPE, stdout=PIPE, universal_newlines=True)
 if (result.returncode == 0):
     p = re.compile('(git@|https://)github.com(/|:)rIGS2016/')
-    if (not p.match(result.stdout)):
+    if (p.match(result.stdout)):
         print("Yo code poet, you have the " + bold("old remote repo. ") + red("✖"))
         print("You need to run this:")
         print()
