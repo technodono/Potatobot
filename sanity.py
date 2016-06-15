@@ -3,7 +3,7 @@
 import sys
 import platform
 from distutils.spawn import find_executable
-from subprocess import PIPE, run
+import subprocess
 import imp
 import re
 
@@ -16,6 +16,9 @@ RED = '\033[91m'
 NORMAL = '\033[0m'
 BOLD = '\033[1m'
 UNDERLINE = '\033[4m'
+
+CHECK='\u2714'
+CROSS='\u2716'
 
 def green(text):
     return GREEN + text + NORMAL
@@ -31,9 +34,9 @@ def red(text):
 
 def fatal(result, name, instructions=""):
     if (result):
-        print("checking for " + magenta(name) + " " + green("✔"))
+        print("checking for " + magenta(name) + " " + green(CHECK))
     else:
-        print("You do not have " + magenta(name) + " installed! " + red("✖ FAIL"))
+        print("You do not have " + magenta(name) + " installed! " + red(CROSS + " FAIL"))
         if (len(instructions) > 0):
             print(" You should " + bold(instructions))
         exit(1)
@@ -56,17 +59,19 @@ if (sys.version_info.major < 3):
     if (not windows and find_executable("python3")):
         print(" you should start this script with " + magenta("python3"))
     elif (mac and find_executable("brew")): 
-        print (" you're on " + bold("") + " and have " + magenta("brew") + " so " + green("brew install python3"))
+        print (" you're on " + bold("\uf8ff Mac") + " and have " + magenta("brew") + " so " + green("brew install python3"))
     exit(1)
 else:
-    print("checking " + magenta("python") + " version: " + format_version() + " " + green("✔"))
+    print("checking " + magenta("python") + " version: " + format_version() + " " + green(CHECK))
 
 fatalexe("git")
 
 if (mac): 
     if (find_executable("brew")):
-        result = run(["brew", "list", "pygame"], stdout=PIPE, stderr=PIPE, universal_newlines=True)
-        fatal(result.returncode == 0, "pygame", "brew install pygame --with-python3")
+        p = subprocess.Popen(["brew", "list", "pygame"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+        (stdout, stderr) = p.communicate()
+        p.wait()
+        fatal(p.returncode == 0, "pygame", "brew install pygame --with-python3")
             
 # TODO check if pygame is installed from windows
 
@@ -76,16 +81,18 @@ modules = set(["pyfrc", "wpilib"])
 for module in modules:
     try:
         imp.find_module(module)
-        print("checking python module " + magenta(module) + " " + green("✔"))
+        print("checking python module " + magenta(module) + " " + green(CHECK))
     except ImportError:
         fatal(False, module, "pip3 install " + module)
 
 # check git remote just in case somebody has the old one
-result = run(['git', 'config', '--get', 'remote.origin.url'], stderr=PIPE, stdout=PIPE, universal_newlines=True)
-if (result.returncode == 0):
+p = subprocess.Popen(['git', 'config', '--get', 'remote.origin.url'], stderr=subprocess.PIPE, stdout=subprocess.PIPE, universal_newlines=True)
+p.wait()
+if (p.returncode == 0):
+    stdout, stderr = p.communicate()
     p = re.compile('(git@|https://)github.com(/|:)rIGS2016/')
-    if (p.match(result.stdout)):
-        print("Yo code poet, you have the " + bold("old remote repo. ") + red("✖"))
+    if (p.match(stdout)):
+        print("Yo code poet, you have the " + bold("old remote repo. ") + red(CROSS))
         print("You need to run this:")
         print()
         print(green(" git remote set-url origin git@github.com:rIGSteam/Potatobot.git"))
