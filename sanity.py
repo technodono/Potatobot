@@ -98,7 +98,7 @@ for module in modules:
         if (find_executable("pip3")):
             fatal(False, module, "pip3 install " + module)
         else:
-            fatal(False, module, pythonexe + " -m install " + module)
+            fatal(False, module, pythonexe + " -m pip install " + module)
 
 # check git remote just in case somebody has the old one
 p = Popen(['git', 'config', '--get', 'remote.origin.url'], stderr=PIPE, stdout=PIPE, universal_newlines=True)
