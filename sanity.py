@@ -80,14 +80,7 @@ if (mac and find_executable("brew")):
         p.wait()
         fatal(p.returncode == 0, "pygame", "brew install pygame --with-python3")
 
-try:
-    imp.find_module("pygame")
-except ImportError:
-    print(red(CROSS) + " Failed to find pygame module using imp")
-            
-# TODO check if pygame is installed from windows
-
-modules = set(["pyfrc", "wpilib"])
+modules = set(["pygame", "pyfrc", "wpilib"])
 
 # now test python modules
 for module in modules:
