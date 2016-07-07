@@ -56,7 +56,7 @@ if (not windows):
     CHECK='\u2714'
     CROSS='\u2716'
 else:
-    # not sure why unicode escapes don't work on windows
+    # unicode escapes don't work on all versions of windows
     CHECK='YES'
     CROSS='NO'
 
